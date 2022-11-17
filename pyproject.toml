@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "factopy"
-version = "0.1.0"
+version = "0.1.1"
 description = ""
 authors = ["serinirio <imadom568@gmail.com>"]
 readme = "README.md"
