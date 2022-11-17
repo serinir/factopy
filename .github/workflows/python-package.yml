@@ -47,4 +47,4 @@ jobs:
         files: ./coverage.xml
     - name: Build and pload package to pypi
       run :
-        poetry publish --build --username __TOKEN__ --password ${{ secrets.CODECOV_TOKEN }} 
+        poetry publish --build --username '__TOKEN__' --password ${{ secrets.PYPI_API_TOKEN }} 
