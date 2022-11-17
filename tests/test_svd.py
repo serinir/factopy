@@ -6,6 +6,7 @@ from sklearn.utils.extmath import randomized_svd
 import jax.numpy as jnp
 from jax import random
 from factopy.svd import _svd
+import pytest
 
 thershold = 1e-4
 
@@ -75,3 +76,11 @@ class TestSVD:
         # assert jnp.allclose(self.U,U2,thershold)
         assert jnp.allclose(self.s, s2, thershold)
         # assert jnp.allclose(self.V,V2,thershold)
+
+    def test_engine_error(self):
+        with pytest.raises(ValueError):
+            _svd(self.A, engine="Other")
+
+    def test_engine_uninplemented(self):
+        with pytest.raises(NotImplementedError):
+            _svd(self.A, engine="rust")

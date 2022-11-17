@@ -1,6 +1,6 @@
 from jax.lax.linalg import svd
 from typing import Union, Tuple
-import jax.numpy as jnp 
+import jax.numpy as jnp
 from jax._src.typing import Array
 
 _engine_list = ["jax", "rust", "lapack", "randomized"]
@@ -17,13 +17,15 @@ def _svd(
             matrix, full_matrices=full_matrices, compute_uv=compute_uv
         )  # return either the U,V^t matrices and the s vector or just the s vector
     elif engine == "rust":
-        NotImplementedError("engine support for rust is not yet implemented.")
+        raise NotImplementedError("engine support for rust is not yet implemented.")
     else:
-        ValueError(f'engine should be one of {" ".join(_engine_list)}')
+        raise ValueError(f'engine should be one of {" ".join(_engine_list)}')
     return matrices
-def _svd_flip(u,v):
+
+
+def _svd_flip(u, v):
     max_abs_cols = jnp.argmax(jnp.abs(u), axis=0)
     signs = jnp.sign(u[max_abs_cols, jnp.array(range(u.shape[1]))])
     u *= signs
     v *= signs[:, jnp.newaxis]
-    return u,v
+    return u, v
