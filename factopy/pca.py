@@ -30,7 +30,7 @@ class PCA(base.BaseEstimator, base.TransformerMixin):
 
     def __init__(
         self,
-        n_component: Union[int, str],
+        n_component: Union[int, str]=None,
         scale_unit: bool = True,
         quanti_sup: Union[Array, int, str] = None,
         quali_sup: Union[Array, int, str] = None,
@@ -60,27 +60,36 @@ class PCA(base.BaseEstimator, base.TransformerMixin):
                 fit_svd_solver = "randomized"
 
         elif fit_svd_solver == "qdwh":
-            self._fit_qdwh(X, fit_ncomponents)
+            self._fit_qdwh(X)
         # elif fit_svd_solver == "lapack":
-        #     self._fit_lapack(X, fit_ncomponents)
+        #     self._fit_lapack(X)
         # elif fit_svd_solver in ["arpack", "randomized"]:
-        #     self._fit_truncated(X, fit_ncomponents, fit_svd_solver)
+        #     self._fit_truncated(X, fit_svd_solver)
         else:
             raise ValueError("Unrecognized svd_solver='{0}'".format(fit_svd_solver))
 
         return self
 
-    def _fit_qdwh(self, X, ncomponent=None):
+    def fit_transform(self, X, y=None, **fit_params):
+        self.fit(X, **fit_params)
+        return self.U * self.s
+
+    def _fit_qdwh(self, X):
 
         self.mean_ = jnp.mean(X, axis=0)
         centered_X = X - self.mean_
         U, s, Vt = _svd(centered_X)
         U, Vt = _svd_flip(U, Vt)
+        if self.n_component:
+            U = U[:, : self.n_component]
+            s = s[: self.n_component]
+            Vt = Vt[: self.n_component]
         self.explained_variance_ = jnp.square(s) / (X.shape[0] - 1)
         self.total_explained_variance_ = jnp.sum(self.explained_variance_)
         self.explained_variance_ratio = (
             self.explained_variance_ / self.total_explained_variance_
         )
-
+        self.U = U
+        self.s = s
         self.components_ = Vt
         return U, s, Vt
