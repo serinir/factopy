@@ -1,13 +1,13 @@
 from jax.lax.linalg import svd
 from typing import Union, Tuple
-from jax.numpy import ndarray
+import jax.numpy as jnp 
 from jax._src.typing import Array
 
 _engine_list = ["jax", "rust", "lapack", "randomized"]
 
 
 def _svd(
-    matrix: Union[Array, ndarray],
+    matrix: Union[Array, jnp.ndarray],
     full_matrices: bool = False,
     compute_uv: bool = True,
     engine: str = "jax",
@@ -21,3 +21,9 @@ def _svd(
     else:
         ValueError(f'engine should be one of {" ".join(_engine_list)}')
     return matrices
+def _svd_flip(u,v):
+    max_abs_cols = jnp.argmax(jnp.abs(u), axis=0)
+    signs = jnp.sign(u[max_abs_cols, jnp.array(range(u.shape[1]))])
+    u *= signs
+    v *= signs[:, jnp.newaxis]
+    return u,v
