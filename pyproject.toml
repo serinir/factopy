@@ -4,7 +4,13 @@ version = "0.1.0"
 description = ""
 authors = ["serinirio <imadom568@gmail.com>"]
 readme = "README.md"
-
+license = "MIT"
+homepage = "https://github.com/serinir/factopy"
+repository = "https://github.com/serinir/factopy"
+keywords = ["PCA", "SVD", "factorisation","reduction","dimension"]
+include = [
+    "LICENSE",
+]
 [tool.poetry.dependencies]
 python = "^3.9"
 jax = "^0.3.24"
